@@ -49,9 +49,17 @@ services:
         hostname: symfony-mail
         command: bin/maildev --web 1080 --smtp 1025 --hide-extensions STARTTLS
         restart: always
-   
+
         ports:
             - 1080:1080
+
+    gotenberg:
+        image: gotenberg/gotenberg:8
+        container_name: symfony-gotenberg-wr602d
+        hostname: symfony-gotenberg
+        restart: always
+        ports:
+            - 3000:3000
 
 volumes:
     db-volume:
