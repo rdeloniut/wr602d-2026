@@ -4,6 +4,8 @@ namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\Entity\Plan;
+use App\Entity\Tool;
+
 use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
@@ -11,34 +13,62 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         //--- CREATION PLAN GRATUIT
-        $plan = new Plan();
-        $plan->setName('FREE');
-        $plan->setDescription('Abonnement gratuit');
-        $plan->setPrice(0);
-        $plan->setLimitGeneration(2);
-        $plan->setActive(true);
+        $planFree = new Plan();
+        $planFree->setName('FREE');
+        $planFree->setDescription('Abonnement gratuit');
+        $planFree->setPrice(0);
+        $planFree->setLimitGeneration(2);
+        $planFree->setActive(true);
         //--- DONE - A REMPLACER PAR UN LIFECYCLE
         //$plan->setCreatedAt(new \DateTimeImmutable());
-        $manager->persist($plan);
+        $manager->persist($planFree);
 
         //--- CREATION PLAN BASIC
-        $plan = new Plan();
-        $plan->setName('BASIC');
-        $plan->setDescription('Abonnement basic - 20 générations par jour');
-        $plan->setPrice(9.9);
-        $plan->setLimitGeneration(20);
-        $plan->setActive(true);
-        $manager->persist($plan);
+        $planBasic = new Plan();
+        $planBasic->setName('BASIC');
+        $planBasic->setDescription('Abonnement basic - 20 générations par jour');
+        $planBasic->setPrice(9.9);
+        $planBasic->setLimitGeneration(20);
+        $planBasic->setActive(true);
+        $manager->persist($planBasic);
 
         //--- CREATION PLAN PREMIUM
-        $plan = new Plan();
-        $plan->setName('PREMIUM');
-        $plan->setDescription('Abonnement PREMIUM - 200 générations par jour');
-        $plan->setPrice(45);
-        $plan->setLimitGeneration(200);
-        $plan->setActive(true);
-        $manager->persist($plan);
+        $planPremium = new Plan();
+        $planPremium->setName('PREMIUM');
+        $planPremium->setDescription('Abonnement PREMIUM - 200 générations par jour');
+        $planPremium->setPrice(45);
+        $planPremium->setLimitGeneration(200);
+        $planPremium->setActive(true);
+        $manager->persist($planPremium);
+
+
+        //--- CREATION D'UN TOOL
+        $tool = new Tool();
+        $tool->setName('URL vers PDF');
+        $tool->setDescription('Convertissez une URL vers PDF');
+        $tool->setColor('blue');
+        $tool->setIcon('fa-solid fa-link');
+        $tool->setIsActive(true);
+        $tool->addPlan($planFree);
+        $tool->addPlan($planBasic);
+        $tool->addPlan($planPremium);
+
+        $manager->persist($tool);
+
+        //--- CREATION D'UN TOOL
+        $tool = new Tool();
+        $tool->setName('HTML vers PDF');
+        $tool->setDescription('Convertissez un fichier HTML vers PDF');
+        $tool->setColor('pink');
+        $tool->setIcon('fa-solid fa-html5');
+        $tool->setIsActive(true);
+        $tool->addPlan($planBasic);
+        $tool->addPlan($planPremium);
+
+        $manager->persist($tool);
+
 
         $manager->flush();
+
     }
 }
