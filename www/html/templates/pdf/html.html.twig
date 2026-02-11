@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}HTML vers PDF — Convertisseur PDF{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+{% endblock %}
+
+{% block body %}
+    {# ── NAVBAR ── #}
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="{{ path('app_index') }}" class="nav-brand">
+                <img src="{{ asset('mmi-pdf-converter.png') }}" alt="PDF Factory" style="height:100px;">
+            </a>
+            <div class="nav-actions">
+                <a href="{{ path('app_index') }}" class="btn btn-outline">
+                    <span class="material-icons-round" style="font-size:18px">arrow_back</span>
+                    Accueil
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    {# ── TOOL PAGE ── #}
+    <section class="tool-page">
+        <div class="tool-page-inner">
+            <div class="tool-page-header">
+                <div class="tool-page-icon bg-pink">
+                    <i class="fa-brands fa-html5"></i>
+                </div>
+                <div>
+                    <h1>HTML vers PDF</h1>
+                    <p>Convertissez un fichier HTML en document PDF haute qualité</p>
+                </div>
+            </div>
+
+            {% for message in app.flashes('error') %}
+                <div class="tool-alert">
+                    <span class="material-icons-round">error_outline</span>
+                    <div>
+                        <strong>Erreur</strong>
+                        <p>{{ message }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="tool-form-card">
+                {{ form_start(form, {'attr': {'class': 'tool-form'}}) }}
+                    <div class="tool-form-group">
+                        <label class="tool-form-label">
+                            <span class="material-icons-round">upload_file</span>
+                            Fichier HTML
+                        </label>
+                        {{ form_widget(form.file, {'attr': {'class': 'tool-form-input', 'accept': '.html,.htm'}}) }}
+                        {{ form_errors(form.file) }}
+                        <span class="tool-form-hint">Sélectionnez un fichier .html à convertir en PDF (max. 10 Mo)</span>
+                    </div>
+
+                    <div class="tool-form-actions">
+                        {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary btn-lg'}}) }}
+                    </div>
+                {{ form_end(form) }}
+            </div>
+
+            <div class="tool-page-info">
+                <div class="tool-info-item">
+                    <span class="material-icons-round">code</span>
+                    <div>
+                        <strong>CSS supporté</strong>
+                        <p>Styles CSS intégrés conservés</p>
+                    </div>
+                </div>
+                <div class="tool-info-item">
+                    <span class="material-icons-round">high_quality</span>
+                    <div>
+                        <strong>Rendu Chromium</strong>
+                        <p>Rendu fidèle via navigateur</p>
+                    </div>
+                </div>
+                <div class="tool-info-item">
+                    <span class="material-icons-round">lock</span>
+                    <div>
+                        <strong>Sécurisé</strong>
+                        <p>Vos fichiers ne sont pas conservés</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# ── FOOTER ── #}
+    <footer class="footer">
+        &copy; {{ 'now'|date('Y') }} PDF Factory. Tous droits réservés.
+    </footer>
+{% endblock %}
