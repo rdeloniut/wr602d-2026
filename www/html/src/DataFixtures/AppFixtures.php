@@ -41,7 +41,6 @@ class AppFixtures extends Fixture
         $planPremium->setActive(true);
         $manager->persist($planPremium);
 
-
         //--- CREATION D'UN TOOL
         $tool = new Tool();
         $tool->setName('URL vers PDF');
@@ -66,7 +65,6 @@ class AppFixtures extends Fixture
         $tool->addPlan($planPremium);
 
         $manager->persist($tool);
-
 
         $manager->flush();
 
