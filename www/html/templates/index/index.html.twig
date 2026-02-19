@@ -1,0 +1,201 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil — Convertisseur PDF{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+{% endblock %}
+
+{% block body %}
+    {# ── NAVBAR ── #}
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="{{ path('app_index') }}" class="nav-brand">
+                <img src="{{ asset('mmi-pdf-converter.png') }}" alt="PDF Factory" style="height:100px;">
+            </a>
+            <div class="nav-actions">
+                <a href="#pricing" class="btn btn-outline">Tarifs</a>
+                <a href="#" class="btn btn-primary">
+                    <span class="material-icons-round" style="font-size:18px">login</span>
+                    Connexion
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    {# ── HERO ── #}
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-badge">
+                <span class="material-icons-round" style="font-size:16px">bolt</span>
+                Rapide, simple, puissant
+            </div>
+            <h1>Transformez vos fichiers <span>en PDF</span> en un clic</h1>
+            <p>
+                Une suite d'outils professionnels pour convertir, fusionner et manipuler
+                vos documents PDF. Propulsé par Gotenberg.
+            </p>
+            <div class="hero-actions">
+                <a href="#tools" class="btn btn-primary">
+                    <span class="material-icons-round" style="font-size:18px">explore</span>
+                    Découvrir les outils
+                </a>
+                <a href="#pricing" class="btn btn-outline">Voir les tarifs</a>
+            </div>
+        </div>
+    </section>
+
+    {# ── TOOLS ── #}
+    <section class="section" id="tools">
+        <div class="section-inner">
+            <div class="section-header">
+                <h2>Nos outils</h2>
+                <p>Tout ce dont vous avez besoin pour travailler avec des PDF</p>
+            </div>
+            <div class="tools-grid">
+                {% for tool in tools %}
+                    <a href="{{ tool.slug ? path('app_convert_' ~ tool.slug) : '#' }}" class="tool-card" data-color="{{ tool.color ?? 'indigo' }}">
+                        <div class="tool-card-accent bg-{{ tool.color ?? 'indigo' }}"></div>
+                        <div class="tool-card-header">
+                            <div class="tool-icon bg-{{ tool.color ?? 'indigo' }}">
+                                <i class="{{ tool.icon ?? 'fa-solid fa-file-pdf' }}"></i>
+                            </div>
+                            <div class="tool-plans">
+                                {% for plan in tool.plans %}
+                                    <span class="tool-plan-badge {{ plan.name|lower }}">
+                                        {%- if plan.name == 'PREMIUM' -%}
+                                            <i class="fa-solid fa-crown"></i>
+                                        {%- endif -%}
+                                        {{ plan.name }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <h3>{{ tool.name }}</h3>
+                        <p>{{ tool.description }}</p>
+                        <div class="tool-card-footer">
+                            <span class="tool-cta">
+                                Utiliser <i class="fa-solid fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </a>
+                {% else %}
+                    <p class="tools-empty">Aucun outil disponible pour le moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {# ── PRICING ── #}
+    <section class="section pricing-section" id="pricing">
+        <div class="pricing-inner">
+            <div class="section-header">
+                <h2>Choisissez votre plan</h2>
+                <p>Des formules adaptées à chaque besoin, de l'occasionnel au professionnel</p>
+            </div>
+            <div class="pricing-toggle">
+                <span class="pricing-toggle-label active">Mensuel</span>
+                <span class="pricing-toggle-sep">/</span>
+                <span class="pricing-toggle-label">Annuel <span class="pricing-save">-20%</span></span>
+            </div>
+            <div class="pricing-grid">
+                {% for plan in plans %}
+                    {% set isFeatured = plan.name == 'BASIC' or (plans|length == 1) %}
+                    <div class="plan-card {{ isFeatured ? 'featured' : '' }}">
+                        {% if isFeatured %}
+                            <div class="plan-badge">
+                                <i class="fa-solid fa-fire"></i> Populaire
+                            </div>
+                        {% endif %}
+
+                        <div class="plan-icon-row">
+                            {% if plan.price == 0 %}
+                                <div class="plan-icon-circle free">
+                                    <i class="fa-solid fa-gift"></i>
+                                </div>
+                            {% elseif plan.name == 'PREMIUM' %}
+                                <div class="plan-icon-circle premium">
+                                    <i class="fa-solid fa-rocket"></i>
+                                </div>
+                            {% else %}
+                                <div class="plan-icon-circle basic">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="plan-name">{{ plan.name }}</div>
+
+                        {% set hasPromo = plan.specialPrice is not null %}
+
+                        <div class="plan-pricing">
+                            {% if plan.price == 0 %}
+                                <div class="plan-price">Gratuit</div>
+                            {% elseif hasPromo %}
+                                <div class="plan-price-old">
+                                    {{ plan.price|number_format(2, ',', ' ') }}&euro;
+                                </div>
+                                <div class="plan-price promo">
+                                    {{ plan.specialPrice|number_format(2, ',', ' ') }}&euro;
+                                    <span>/ mois</span>
+                                </div>
+                                <div class="plan-promo-badge">
+                                    <i class="fa-solid fa-tag"></i>
+                                    -{{ (((plan.price - plan.specialPrice) / plan.price) * 100)|round }}%
+                                </div>
+                                {% if plan.specialPriceTo %}
+                                    <div class="plan-promo-until">
+                                        <i class="fa-regular fa-clock"></i>
+                                        Offre valable jusqu'au {{ plan.specialPriceTo|date('d/m/Y') }}
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="plan-price">
+                                    {{ plan.price|number_format(2, ',', ' ') }}&euro;
+                                    <span>/ mois</span>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <p class="plan-desc">{{ plan.description }}</p>
+
+                        <div class="plan-divider"></div>
+
+                        <ul class="plan-features">
+                            <li>
+                                <span class="material-icons-round">check_circle</span>
+                                <strong>{{ plan.limitGeneration }}</strong> génération{{ plan.limitGeneration > 1 ? 's' : '' }} / jour
+                            </li>
+                            {% for tool in plan.tools %}
+                                <li>
+                                    <span class="material-icons-round">check_circle</span>
+                                    {{ tool.name }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                        <a href="#" class="plan-cta {{ isFeatured ? 'plan-cta-primary' : 'plan-cta-outline' }}">
+                            {% if plan.price == 0 %}
+                                Commencer gratuitement
+                            {% else %}
+                                Choisir {{ plan.name }}
+                            {% endif %}
+                            <i class="fa-solid fa-arrow-right plan-cta-arrow"></i>
+                        </a>
+
+                        {% if plan.price == 0 %}
+                            <p class="plan-note">Aucune carte requise</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {# ── FOOTER ── #}
+    <footer class="footer">
+        &copy; {{ 'now'|date('Y') }} PDF Factory. Tous droits réservés.
+    </footer>
+{% endblock %}
